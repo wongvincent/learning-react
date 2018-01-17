@@ -1,9 +1,19 @@
-import React from 'react';
+// @flow
+import * as React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import TicTacToe from './tictactoe.js';
 
-function GameBoard(props) {
+type Props = {};
+type State = {
+  currentGame: number;
+};
+type Games = Array<{name: string, key: number}>;
+type GameBoardProps = {
+  currentGame: number;
+};
+
+function GameBoard(props: GameBoardProps) {
   return (
     <div>
       <TicTacToe showing={props.currentGame === 0} />
@@ -11,7 +21,7 @@ function GameBoard(props) {
   );
 }
 
-class Game extends React.Component {
+class Game extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
@@ -19,16 +29,16 @@ class Game extends React.Component {
     };
   }
 
-  newGame(key) {
+  newGame(key: number) {
     this.setState({
       currentGame: key,
     });
   }
 
-  renderGameOptions(games) {
+  renderGameOptions(games: Games) {
     return games.map((game, index) => {
-      const name = game.name;
-      const key = game.key;
+      const name: string = game.name;
+      const key: number = game.key;
       return (
         <li key={key}>
           <button onClick={() => this.newGame(key)}>{name}</button>
@@ -37,14 +47,14 @@ class Game extends React.Component {
     });
   }
 
-  render() {
-    const games = [
+  render(): React.Node {
+    const games: Games = [
       {
         name: 'Tic Tac Toe',
         key: 0
       }
     ];
-    const gameOptions = this.renderGameOptions(games);
+    const gameOptions: React.Node = this.renderGameOptions(games);
 
     return (
       <div>
@@ -58,5 +68,5 @@ class Game extends React.Component {
 
 ReactDOM.render(
   <Game />,
-  document.getElementById('root')
+  (document.getElementById('root'): any)
 );

@@ -1,7 +1,31 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+// @flow
+import * as React from 'react';
 
-function Square(props) {
+type WinningLine = [number, number, number];
+type Squares = Array<?string>;
+type History = Array<{squares: Squares}>;
+type Props = {
+  showing: boolean;
+};
+type State = {
+  history: History;
+  moves: Array<number>;
+  xIsNext: boolean;
+};
+type SquareProps = {
+  isPreviousMove: boolean;
+  isWinningSquare: boolean;
+  onClick: any;
+  value: ?string;
+};
+type BoardProps = {
+  previousMove: number;
+  winningSquares: ?WinningLine;
+  squares: Squares;
+  onClick: any;
+};
+
+function Square(props: SquareProps) {
   const previousMoveClass = props.isPreviousMove ? 'previous-move' : '';
   const winningSquareClass = props.isWinningSquare ? 'winner' : '';
   const classes = `square ${previousMoveClass} ${winningSquareClass}` 
@@ -12,10 +36,10 @@ function Square(props) {
   );
 }
 
-class Board extends React.Component {
-  renderSquare(i) {
-    const isPreviousMove = this.props.previousMove === i;
-    const isWinningSquare = this.props.winningSquares && this.props.winningSquares.some(function(winningSquare) {
+class Board extends React.Component<BoardProps> {
+  renderSquare(i: number) {
+    const isPreviousMove: boolean = this.props.previousMove === i;
+    const isWinningSquare: boolean = !!this.props.winningSquares && this.props.winningSquares.some(function(winningSquare) {
       return winningSquare === i;
     });
 
@@ -52,8 +76,8 @@ class Board extends React.Component {
   }
 }
 
-export default class TicTacToe extends React.Component {
-  constructor(props) {
+export default class TicTacToe extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       history: [{
@@ -64,11 +88,11 @@ export default class TicTacToe extends React.Component {
     };
   }
 
-  handleClick(i) {
-    const history = this.state.history;
-    const current = history[history.length - 1];
-    const squares = current.squares.slice();
-    const moves = this.state.moves;
+  handleClick(i: number) {
+    const history: History = this.state.history;
+    const current: {squares: Squares} = history[history.length - 1];
+    const squares: Squares = current.squares.slice();
+    const moves: Array<number> = this.state.moves;
     if (squares[i] || calculateWinningLine(squares)) {
       return;
     }
@@ -82,9 +106,9 @@ export default class TicTacToe extends React.Component {
     });
   }
 
-  jumpTo(move) {
-    const history = this.state.history;
-    const moves = this.state.moves;
+  jumpTo(move: number) {
+    const history: History = this.state.history;
+    const moves: Array<number> = this.state.moves;
     this.setState({
       history: history.slice(0, move + 1),
       xIsNext: (move % 2 === 1),
@@ -92,13 +116,13 @@ export default class TicTacToe extends React.Component {
     })
   }
 
-  render() {
-    const showing = this.props.showing;
-    const history = this.state.history;
-    const current = history[history.length - 1];
-    const winningLine = calculateWinningLine(current.squares);
-    const winner = winningLine ? (this.state.xIsNext ? 'O' : 'X') : null;
-    const previousMove = this.state.moves[this.state.moves.length - 1];
+  render(): React.Node {
+    const showing: boolean = this.props.showing;
+    const history: History = this.state.history;
+    const current: {squares: Squares} = history[history.length - 1];
+    const winningLine: ?WinningLine = calculateWinningLine(current.squares);
+    const winner: ?string = winningLine ? (this.state.xIsNext ? 'O' : 'X') : null;
+    const previousMove: number = this.state.moves[this.state.moves.length - 1];
     const moves = history.map((step, move) => {
       const desc = move ?
         'Go to move #' + move :
@@ -110,7 +134,7 @@ export default class TicTacToe extends React.Component {
       );
     });
 
-    let status;
+    let status: string;
     if (winner) {
       status = 'Winner: ' + winner;
     } else {
@@ -140,8 +164,8 @@ export default class TicTacToe extends React.Component {
   }
 }
 
-function calculateWinningLine(squares) {
-  const lines = [
+function calculateWinningLine(squares: Squares): ?WinningLine {
+  const lines: Array<[number,number,number]> = [
     [0, 1, 2],
     [3, 4, 5],
     [6, 7, 8],
