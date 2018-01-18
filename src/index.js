@@ -3,6 +3,7 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import TicTacToe from './tictactoe.js';
+import ConnectFour from './connectfour.js';
 
 type Props = {};
 type State = {
@@ -17,6 +18,7 @@ function GameBoard(props: GameBoardProps) {
   return (
     <div>
       <TicTacToe showing={props.currentGame === 0} />
+      <ConnectFour showing={props.currentGame === 1} />
     </div>
   );
 }
@@ -25,7 +27,7 @@ class Game extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
-      currentGame: 0
+      currentGame: 1
     };
   }
 
@@ -52,6 +54,10 @@ class Game extends React.Component<Props, State> {
       {
         name: 'Tic Tac Toe',
         key: 0
+      },
+      {
+        name: 'Connect Four',
+        key: 1
       }
     ];
     const gameOptions: React.Node = this.renderGameOptions(games);

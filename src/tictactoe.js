@@ -1,5 +1,6 @@
 // @flow
 import * as React from 'react';
+import './tictactoe.css';
 
 type WinningLine = [number, number, number];
 type Squares = Array<?string>;
@@ -146,7 +147,7 @@ export default class TicTacToe extends React.Component<Props, State> {
         { showing
         ?
           <div className="game">
-            <div className="game-board">
+            <div className="game-board tic-tac-toe">
               <Board
                 squares={current.squares}
                 onClick={(i) => this.handleClick(i)}

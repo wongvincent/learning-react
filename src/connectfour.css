@@ -1,0 +1,35 @@
+.connect-four {
+    border: 10px solid #0786c9;
+    background: #0786c9;
+}
+
+.connect-four .column {
+    display: inline-block;
+}
+
+.connect-four .square {
+    border: 5px solid #0786c9;
+    width: 50px;
+    height: 50px;
+    background: #0786c9;
+}
+
+.connect-four .square .circle {
+    width: 50px;
+    height: 50px;
+    -moz-border-radius: 50px;
+    -webkit-border-radius: 50px;
+    border-radius: 50px;
+}
+
+.connect-four .red-circle {
+    background:#e1001a;
+}
+
+.connect-four .yellow-circle {
+    background: #ffea1c;
+}
+
+.connect-four .blank-circle {
+    background: #ffffff;
+}
