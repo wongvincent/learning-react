@@ -118,6 +118,16 @@ export default class TicTacToe extends React.Component<Props, State> {
     })
   }
 
+  resetGame() {
+    this.setState({
+        history: [{
+          squares: Array(9).fill(null),
+        }],
+        moves: [],
+        xIsNext: false,
+    });
+  }
+
   render(): React.Node {
     const showing: boolean = this.props.showing;
     const history: History = this.state.history;
@@ -158,6 +168,7 @@ export default class TicTacToe extends React.Component<Props, State> {
             <div className="game-info">
               <div>{status}</div>
               <ol>{moves}</ol>
+              <button onClick={() => this.resetGame()}>Reset Game</button>
             </div>
           </div>
         : null }

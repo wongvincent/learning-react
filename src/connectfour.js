@@ -143,15 +143,41 @@ export default class ConnectFour extends React.Component<Props, State> {
     }
   }
 
+  resetGame() {
+    this.setState({
+      redIsNext: true,
+      history: [{
+        "0": Array(6).fill(0),
+        "1": Array(6).fill(0),
+        "2": Array(6).fill(0),
+        "3": Array(6).fill(0),
+        "4": Array(6).fill(0),
+        "5": Array(6).fill(0),
+        "6": Array(6).fill(0)
+      }],
+    })
+  }
+
   render() {
     const showing: boolean = this.props.showing;
     const current: Grid = this.state.history[this.state.history.length - 1];
+    let status: string;
+    const winner: number = 0;
+    if (winner) {
+      status = 'Winner: ' + winner === 1 ? 'Red' : 'Yellow';
+    } else {
+      status = 'Next player: ' + (this.state.redIsNext ? 'Red' : 'Yellow');
+    }
     return (
       <div>
         {showing ?
           <div className="game">
             <div className="game-board connect-four">
               <Board current={current} onClick={(columnNum) => this.playPiece(columnNum)} />
+            </div>
+            <div className="game-info">
+              <div>{status}</div>
+              <button onClick={() => this.resetGame()}>Reset Game</button>
             </div>
           </div>
           : null
