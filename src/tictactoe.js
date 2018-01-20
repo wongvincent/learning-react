@@ -8,6 +8,7 @@ type History = Array<{squares: Squares}>;
 type Props = {
   showing: boolean;
 };
+type HandleClick = (i: number) => void;
 type State = {
   history: History;
   moves: Array<number>;
@@ -16,14 +17,14 @@ type State = {
 type SquareProps = {
   isPreviousMove: boolean;
   isWinningSquare: boolean;
-  onClick: any;
+  onClick: HandleClick;
   value: ?string;
 };
 type BoardProps = {
   previousMove: number;
   winningSquares: ?WinningLine;
   squares: Squares;
-  onClick: any;
+  onClick: HandleClick;
 };
 
 function Square(props: SquareProps) {
