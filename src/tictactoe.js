@@ -167,7 +167,7 @@ export default class TicTacToe extends React.Component<Props, State> {
             </div>
             <div className="game-info">
               <div>{status}</div>
-              <ol>{moves}</ol>
+              <ol start="0">{moves}</ol>
               <button onClick={() => this.resetGame()}>Reset Game</button>
             </div>
           </div>
