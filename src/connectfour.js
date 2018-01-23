@@ -4,15 +4,7 @@ import './connectfour.css';
 
 type GridCircle = number;
 type GridColumn = Array<GridCircle>;
-type Grid = {|
-  "0": GridColumn,
-  "1": GridColumn,
-  "2": GridColumn,
-  "3": GridColumn,
-  "4": GridColumn,
-  "5": GridColumn,
-  "6": GridColumn,
-|};
+type Grid = Array<GridColumn>;
 type Props = {
   showing: boolean;
 };
@@ -109,28 +101,23 @@ class Board extends React.Component<BoardProps> {
 export default class ConnectFour extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
+    const emptyColumn: GridColumn = Array(6).fill(0);
     this.state = {
       redIsNext: true,
-      history: [{
-        "0": Array(6).fill(0),
-        "1": Array(6).fill(0),
-        "2": Array(6).fill(0),
-        "3": Array(6).fill(0),
-        "4": Array(6).fill(0),
-        "5": Array(6).fill(0),
-        "6": Array(6).fill(0)
-      }],
+      history: [
+        [emptyColumn, emptyColumn, emptyColumn, emptyColumn, emptyColumn, emptyColumn, emptyColumn]
+      ],
       winner: 0
     };
   }
 
   playPiece(columnNum: number) {
-    const current: Grid = this.state.history[this.state.history.length - 1]; //should deep copy
-    const column: GridColumn = current[columnNum];
+    const current: Grid = this.state.history[this.state.history.length - 1].slice();
+    const column: GridColumn = current[columnNum].slice();
     const isColumnFull: boolean = column[column.length - 1] !== 0;
     const someoneHasWon: number = this.state.winner;
     if (!someoneHasWon && !isColumnFull) {
-      for (const circleIndex: number of column.keys()) {
+      for (let circleIndex: number = 0; circleIndex < column.length; circleIndex++) {
         if (column[circleIndex] === 0) {
           column[circleIndex] = this.state.redIsNext ? 1 : -1;
           current[columnNum] = column;
@@ -229,17 +216,12 @@ export default class ConnectFour extends React.Component<Props, State> {
   }
 
   resetGame() {
+    const emptyColumn: GridColumn = Array(6).fill(0);
     this.setState({
-      redIsNext: true,
-      history: [{
-        "0": Array(6).fill(0),
-        "1": Array(6).fill(0),
-        "2": Array(6).fill(0),
-        "3": Array(6).fill(0),
-        "4": Array(6).fill(0),
-        "5": Array(6).fill(0),
-        "6": Array(6).fill(0)
-      }],
+        redIsNext: true,
+        history: [
+          [emptyColumn, emptyColumn, emptyColumn, emptyColumn, emptyColumn, emptyColumn, emptyColumn]
+        ],
       winner: 0
     })
   }
