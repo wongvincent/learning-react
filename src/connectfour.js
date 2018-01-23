@@ -5,12 +5,13 @@ import './connectfour.css';
 type GridCircle = number;
 type GridColumn = Array<GridCircle>;
 type Grid = Array<GridColumn>;
+type History = Array<Grid>
 type Props = {
   showing: boolean;
 };
 type State = {
   redIsNext: boolean;
-  history: Array<Grid>;
+  history: History;
   winner: number;
 };
 type BoardProps = {
@@ -226,9 +227,29 @@ export default class ConnectFour extends React.Component<Props, State> {
     })
   }
 
+  jumpTo(move: number) {
+    const history: History = this.state.history;
+    this.setState({
+      history: history.slice(0, move + 1),
+      redIsNext: (move % 2 === 0),
+      winner: move === history.length - 1 ? this.state.winner : 0
+    });
+  }
+
   render() {
     const showing: boolean = this.props.showing;
+    const history: History = this.state.history;
     const current: Grid = this.state.history[this.state.history.length - 1];
+    const moves = history.map((step, move) => {
+      const desc = move ?
+        'Go to move #' + move :
+        'Go to game start';
+      return (
+        <li key={move}>
+          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+        </li>
+      );
+    });
     let status: string;
     const winner: number = this.state.winner;
     if (winner) {
@@ -245,6 +266,7 @@ export default class ConnectFour extends React.Component<Props, State> {
             </div>
             <div className="game-info">
               <div>{status}</div>
+              <ol start="0">{moves}</ol>
               <button onClick={() => this.resetGame()}>Reset Game</button>
             </div>
           </div>
