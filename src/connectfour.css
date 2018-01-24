@@ -1,0 +1,42 @@
+.connect-four {
+    border: 10px solid #0786c9;
+    background: #0786c9;
+    height: 100%;
+}
+
+.connect-four .column {
+    display: inline-block;
+}
+
+.connect-four .square {
+    width: 50px;
+    height: 50px;
+    background: #0786c9;
+    padding: 7px;
+}
+
+.connect-four .square.winner {
+    border: 5px solid black;
+    padding: 2px;
+}
+
+.connect-four .square .circle {
+    width: 50px;
+    height: 50px;
+    -moz-border-radius: 50px;
+    -webkit-border-radius: 50px;
+    border-radius: 50px;
+    box-shadow: 2px 2px;
+}
+
+.connect-four .red-circle {
+    background:#e1001a;
+}
+
+.connect-four .yellow-circle {
+    background: #ffea1c;
+}
+
+.connect-four .blank-circle {
+    background: #ffffff;
+}
