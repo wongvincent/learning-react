@@ -2,7 +2,7 @@
   "name": "react-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://wongvincent.github.io/learning-react",
+  "homepage": "http://learningreact.vincentwong.me/",
   "dependencies": {
     "flow-bin": "^0.63.1",
     "gh-pages": "^1.1.0",
