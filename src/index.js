@@ -64,8 +64,8 @@ class Game extends React.Component<Props, State> {
 
     return (
       <div>
+        <div><ul>{gameOptions}</ul></div>
         <GameBoard currentGame={this.state.currentGame} />
-        <ul>{gameOptions}</ul>
       </div>
     );
   }

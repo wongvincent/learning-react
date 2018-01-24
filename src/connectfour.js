@@ -6,20 +6,25 @@ type GridCircle = number;
 type GridColumn = Array<GridCircle>;
 type Grid = Array<GridColumn>;
 type History = Array<Grid>
+type Coords = [number, number];
 type Props = {
   showing: boolean;
 };
 type State = {
   redIsNext: boolean;
   history: History;
-  winner: number;
+  winningLine: Array<Coords>;
+  moves: Array<Coords>;
 };
 type BoardProps = {
   current: Grid;
   onClick: (columnNum: number) => void;
+  winningLine: Array<Coords>;
 };
 type ColumnProps = {
+  columnNum: number;
   column: GridColumn;
+  winningLine: Array<Coords>
 };
 type CircleProps = {
   circle: GridCircle;
@@ -48,14 +53,29 @@ class Circle extends React.Component<CircleProps> {
 }
 
 class Column extends React.Component<ColumnProps> {
+  isWinningCircle(x, y): boolean {
+    const winningLine: Array<Coords> = this.props.winningLine;
+    for (let winningCircle: Coords of winningLine) {
+      const [winningX, winningY] = winningCircle;
+      if (x === winningX && y === winningY) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   renderCircles() {
     const renderedCircles: Array<React.Node> = [];
+    const columnNum: number = this.props.columnNum;
     const column: GridColumn = this.props.column;
     for (let i=5; i>=0; i--) {
       const circle: GridCircle = column[i];
+      const isWinnerClass: string = this.isWinningCircle(columnNum, i) ? 'winner' : '';
+      const squareClasses: string = `square ${isWinnerClass}`
       renderedCircles.push(
-        <div className="square" key={i}>
-          <Circle circle={circle} />
+        <div className={squareClasses} key={i}>
+          <Circle
+            circle={circle} />
         </div>
       );
     }
@@ -77,7 +97,10 @@ class Board extends React.Component<BoardProps> {
       const column: GridColumn = this.props.current[columnNum];
       renderedColumns.push(
         <div className="column" key={columnNum} onClick={() => this.props.onClick(columnNum)}>
-          <Column column={column} />
+          <Column
+            columnNum={columnNum}
+            column={column}
+            winningLine={this.props.winningLine} />
         </div>
       );
     }
@@ -108,7 +131,8 @@ export default class ConnectFour extends React.Component<Props, State> {
       history: [
         [emptyColumn, emptyColumn, emptyColumn, emptyColumn, emptyColumn, emptyColumn, emptyColumn]
       ],
-      winner: 0
+      winningLine: [],
+      moves: []
     };
   }
 
@@ -116,86 +140,80 @@ export default class ConnectFour extends React.Component<Props, State> {
     const current: Grid = this.state.history[this.state.history.length - 1].slice();
     const column: GridColumn = current[columnNum].slice();
     const isColumnFull: boolean = column[column.length - 1] !== 0;
-    const someoneHasWon: number = this.state.winner;
+    const someoneHasWon: number = this.state.winningLine.length;
     if (!someoneHasWon && !isColumnFull) {
-      for (let circleIndex: number = 0; circleIndex < column.length; circleIndex++) {
+      let circleIndex: number = 0;
+      while(circleIndex < column.length) {
         if (column[circleIndex] === 0) {
           column[circleIndex] = this.state.redIsNext ? 1 : -1;
           current[columnNum] = column;
           break;
         }
+        circleIndex++;
       }
-      const winner: number = this.calculateWinner(current, columnNum);
+      const winningLine: Array<Coords> = this.calculateWinner(current, columnNum) || [];
       this.setState({
         redIsNext: !this.state.redIsNext,
         history: this.state.history.concat([
           current
         ]),
-        winner
+        winningLine,
+        moves: this.state.moves.concat([[columnNum, circleIndex]])
       });
     }
   }
 
-  calculateWinner(current: Grid, columnNum: number): number {
-    let currentValue: number = 0;
+  calculateWinner(current: Grid, columnNum: number): ?Array<Coords> {
     let rowNum: number = -1;
-    const computeCurrentValue = (circle: number, currentValue: number): number => {
-      if (circle === 1) {
-        return Math.max(1, currentValue + 1);
-      } else if (circle === -1) {
-        return Math.min(-1, currentValue - 1);
+    let lastFour: Array<Coords> = [];
+    const processCircle = (x: number, y: number) => {
+      const currentCircleValue: GridCircle = current[x][y];
+      if (currentCircleValue === 0) {
+        lastFour = [];
+      } else if (lastFour.length === 0) {
+        lastFour = [[x, y]];
       } else {
-        return 0;
+        const [prevX, prevY]: Coords = lastFour[lastFour.length - 1];
+        const previousCircleValue = current[prevX][prevY];
+        if (previousCircleValue === currentCircleValue) {
+          lastFour = lastFour.concat([[x, y]]);
+        } else {
+          lastFour = [[x, y]];
+        }
       }
     };
-    const checkIfWon = (currentValue: number): number => {
-      if (currentValue === 4) return 1;
-      if (currentValue === -4) return -1;
-      return 0;
-    }
 
     // Checking vertical line and set index (row) of last piece played
-    for (let circle: number of current[columnNum]) {
-      currentValue = computeCurrentValue(circle, currentValue);
-      if (currentValue === 0) break;
-      const winner: number = checkIfWon(currentValue);
-      if (winner) {
-        return winner;
-      }
-      rowNum++;
+    for (let rowIndex: number = 0; rowIndex < current[columnNum].length; rowIndex++) {
+      processCircle(columnNum, rowIndex);
+      if (lastFour.length === 0) break;
+      rowNum = rowIndex;
+      if (lastFour.length === 4) return lastFour;
     }
-    
-    currentValue = 0;
+
+    lastFour = [];
 
     // Check horizontal line
-    for (var columnIndex = 0; columnIndex < 7; columnIndex++) {
-      const circle: number = current[columnIndex][rowNum];
-      currentValue = computeCurrentValue(circle, currentValue);
-      const winner: number = checkIfWon(currentValue);
-      if (winner) {
-        return winner;
-      }
+    for (let columnIndex: number = 0; columnIndex < 7; columnIndex++) {
+      processCircle(columnIndex, rowNum);
+      if (lastFour.length === 4) return lastFour;
     }
 
-    currentValue = 0;
+    lastFour = [];
 
     // Check diagonal top-left to bottom-right line
     let minimumXYToZero: number = Math.min(columnNum, 5 - rowNum);
     let X: number = columnNum - minimumXYToZero;
     let Y: number = rowNum + minimumXYToZero;
 
-    while(X < 7 && Y > -1) {
-      const circle: number = current[X][Y];
-      currentValue = computeCurrentValue(circle, currentValue);
-      const winner: number = checkIfWon(currentValue);
-      if (winner) {
-        return winner;
-      }
+    while (X < 7 && Y > -1) {
+      processCircle(X, Y);
+      if (lastFour.length === 4) return lastFour;
       X++;
       Y--;
     }
 
-    currentValue = 0;
+    lastFour = [];
 
     // Check diagonal bottom-left to top-right line
     minimumXYToZero = Math.min(columnNum, rowNum);
@@ -203,28 +221,26 @@ export default class ConnectFour extends React.Component<Props, State> {
     Y = rowNum - minimumXYToZero;
 
     while(X < 7 && Y < 6) {
-      const circle: number = current[X][Y];
-      currentValue = computeCurrentValue(circle, currentValue);
-      const winner: number = checkIfWon(currentValue);
-      if (winner) {
-        return winner;
-      }
+      processCircle(X, Y);
+      if (lastFour.length === 4) return lastFour;
       X++;
       Y++;
     }
 
-    return 0;
+    return null;
   }
 
   resetGame() {
     const emptyColumn: GridColumn = Array(6).fill(0);
-    this.setState({
-        redIsNext: true,
-        history: [
-          [emptyColumn, emptyColumn, emptyColumn, emptyColumn, emptyColumn, emptyColumn, emptyColumn]
-        ],
-      winner: 0
-    })
+    const newState: State = {
+      redIsNext: true,
+      history: [
+        [emptyColumn, emptyColumn, emptyColumn, emptyColumn, emptyColumn, emptyColumn, emptyColumn]
+      ],
+      winningLine: [],
+      moves: []
+    };
+    this.setState(newState);
   }
 
   jumpTo(move: number) {
@@ -232,7 +248,8 @@ export default class ConnectFour extends React.Component<Props, State> {
     this.setState({
       history: history.slice(0, move + 1),
       redIsNext: (move % 2 === 0),
-      winner: move === history.length - 1 ? this.state.winner : 0
+      winningLine: move === history.length - 1 ? this.state.winningLine : [],
+      moves: move === 0 ? [] : this.state.moves.slice(0, move),
     });
   }
 
@@ -251,8 +268,10 @@ export default class ConnectFour extends React.Component<Props, State> {
       );
     });
     let status: string;
-    const winner: number = this.state.winner;
-    if (winner) {
+    const winningLine: Array<Coords> = this.state.winningLine;
+    if (winningLine.length) {
+      const [x,y]: Coords = winningLine[0];
+      const winner: GridCircle = current[x][y];
       status = 'Winner: ' + (winner === 1 ? 'Red' : 'Yellow');
     } else {
       status = 'Next player: ' + (this.state.redIsNext ? 'Red' : 'Yellow');
@@ -262,7 +281,10 @@ export default class ConnectFour extends React.Component<Props, State> {
         {showing ?
           <div className="game">
             <div className="game-board connect-four">
-              <Board current={current} onClick={(columnNum) => this.playPiece(columnNum)} />
+              <Board
+                current={current}
+                onClick={(columnNum) => this.playPiece(columnNum)}
+                winningLine={winningLine} />
             </div>
             <div className="game-info">
               <div>{status}</div>
