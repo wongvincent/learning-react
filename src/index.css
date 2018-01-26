@@ -1,5 +1,7 @@
 body {
-  font: 14px "Century Gothic", Futura, sans-serif;
+  font-family: "Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font-size: 16px;
+  line-height: 1.5;
   margin: 20px;
 }
 
@@ -13,6 +15,30 @@ ol, ul {
   padding-left: 30px;
 }
 
+ul {
+  list-style-type: none;
+}
+
+button {
+  font-family: "Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font-size: 16px;
+  margin: 4px 0;
+  padding: 12px;
+  border-radius: 3px;
+  background-color: #eee;
+  border: 1px solid #ccc;
+}
+
+.game-options button {
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.game-options ul li {
+  display: inline-block;
+  margin-right: 10px;
+}
+
 .game {
   display: flex;
   flex-direction: row;
@@ -21,4 +47,9 @@ ol, ul {
 
 .game-info {
   margin-left: 20px;
+}
+
+.game-info .status {
+  font-weight: 500;
+  font-size: 24px;
 }

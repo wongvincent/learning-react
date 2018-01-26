@@ -230,19 +230,6 @@ export default class ConnectFour extends React.Component<Props, State> {
     return null;
   }
 
-  resetGame() {
-    const emptyColumn: GridColumn = Array(6).fill(0);
-    const newState: State = {
-      redIsNext: true,
-      history: [
-        [emptyColumn, emptyColumn, emptyColumn, emptyColumn, emptyColumn, emptyColumn, emptyColumn]
-      ],
-      winningLine: [],
-      moves: []
-    };
-    this.setState(newState);
-  }
-
   jumpTo(move: number) {
     const history: History = this.state.history;
     this.setState({
@@ -259,8 +246,8 @@ export default class ConnectFour extends React.Component<Props, State> {
     const current: Grid = this.state.history[this.state.history.length - 1];
     const moves = history.map((step, move) => {
       const desc = move ?
-        'Go to move #' + move :
-        'Go to game start';
+        'Go to Move #' + move :
+        'Reset Game';
       return (
         <li key={move}>
           <button onClick={() => this.jumpTo(move)}>{desc}</button>
@@ -287,9 +274,8 @@ export default class ConnectFour extends React.Component<Props, State> {
                 winningLine={winningLine} />
             </div>
             <div className="game-info">
-              <div>{status}</div>
+              <div className="status">{status}</div>
               <ol start="0">{moves}</ol>
-              <button onClick={() => this.resetGame()}>Reset Game</button>
             </div>
           </div>
           : null

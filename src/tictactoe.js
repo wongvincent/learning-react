@@ -118,16 +118,6 @@ export default class TicTacToe extends React.Component<Props, State> {
     })
   }
 
-  resetGame() {
-    this.setState({
-        history: [{
-          squares: Array(9).fill(null),
-        }],
-        moves: [],
-        xIsNext: false,
-    });
-  }
-
   render(): React.Node {
     const showing: boolean = this.props.showing;
     const history: History = this.state.history;
@@ -137,8 +127,8 @@ export default class TicTacToe extends React.Component<Props, State> {
     const previousMove: number = this.state.moves[this.state.moves.length - 1];
     const moves = history.map((step, move) => {
       const desc = move ?
-        'Go to move #' + move :
-        'Go to game start';
+        'Go to Move #' + move :
+        'Reset Game';
       return (
         <li key={move}>
           <button onClick={() => this.jumpTo(move)}>{desc}</button>
@@ -166,9 +156,8 @@ export default class TicTacToe extends React.Component<Props, State> {
                 winningSquares={winningLine} />
             </div>
             <div className="game-info">
-              <div>{status}</div>
+              <div className="status">{status}</div>
               <ol start="0">{moves}</ol>
-              <button onClick={() => this.resetGame()}>Reset Game</button>
             </div>
           </div>
         : null }

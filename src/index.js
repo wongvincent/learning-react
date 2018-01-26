@@ -52,19 +52,19 @@ class Game extends React.Component<Props, State> {
   render(): React.Node {
     const games: Games = [
       {
-        name: 'Tic Tac Toe',
-        key: 0
-      },
-      {
         name: 'Connect Four',
         key: 1
+      },
+      {
+        name: 'Tic Tac Toe',
+        key: 0
       }
     ];
     const gameOptions: React.Node = this.renderGameOptions(games);
 
     return (
       <div>
-        <div><ul>{gameOptions}</ul></div>
+        <div className="game-options"><ul>{gameOptions}</ul></div>
         <GameBoard currentGame={this.state.currentGame} />
       </div>
     );
