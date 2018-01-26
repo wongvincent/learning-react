@@ -2,6 +2,8 @@
     border: 10px solid #0786c9;
     background: #0786c9;
     height: 100%;
+    white-space: nowrap;
+    margin-bottom: 10px;
 }
 
 .connect-four .column {

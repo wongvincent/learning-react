@@ -1,18 +1,24 @@
 body {
-    font: 14px "Century Gothic", Futura, sans-serif;
-    margin: 20px;
-  }
-  
-  ol, ul {
-    padding-left: 30px;
-  }
-  
-  .game {
-    display: flex;
-    flex-direction: row;
-  }
-  
-  .game-info {
-    margin-left: 20px;
-  }
-  
+  font: 14px "Century Gothic", Futura, sans-serif;
+  margin: 20px;
+}
+
+@media (max-width: 530px) {
+  body {
+    margin: 0;
+  }  
+} 
+
+ol, ul {
+  padding-left: 30px;
+}
+
+.game {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.game-info {
+  margin-left: 20px;
+}
