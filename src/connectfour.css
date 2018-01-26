@@ -8,6 +8,7 @@
 
 .connect-four .column {
     display: inline-block;
+    max-width: 14%;
 }
 
 .connect-four .square {
@@ -17,9 +18,8 @@
     padding: 7px;
 }
 
-.connect-four .square.winner {
-    border: 5px solid black;
-    padding: 2px;
+.connect-four .square.winner .circle {
+    border-color: black;
 }
 
 .connect-four .square .circle {
@@ -43,10 +43,27 @@
     background: #ffffff;
 }
 
-.connect-four .hover-red {
-    background:#eea5a5;  
+@media only screen and (min-width: 770px) {
+/* don't show hover effects on mobile devices */
+    .connect-four .hover-red {
+        background:#eea5a5;  
+    }
+
+    .connect-four .hover-yellow {
+        background: #fcf2a9;
+    }
 }
 
-.connect-four .hover-yellow {
-    background: #fcf2a9;
+@media only screen and (max-width: 450px) {
+    .connect-four .square {
+        width: 40px;
+        height: 40px;
+        padding: 2px;
+    }
+    
+    .connect-four .square .circle {
+        width: 30px;
+        height: 30px;
+        border-width: 4px;
+    }
 }
