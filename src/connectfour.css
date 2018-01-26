@@ -32,8 +32,7 @@
 }
 
 .connect-four .red-circle {
-    background:#e1001a;
-    
+    background:#e1001a;  
 }
 
 .connect-four .yellow-circle {
@@ -42,5 +41,4 @@
 
 .connect-four .blank-circle {
     background: #ffffff;
-
 }
