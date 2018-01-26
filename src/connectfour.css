@@ -36,9 +36,17 @@
 }
 
 .connect-four .yellow-circle {
-    background: #ffea1c;
+    background: #ffe712;
 }
 
 .connect-four .blank-circle {
     background: #ffffff;
+}
+
+.connect-four .hover-red {
+    background:#eea5a5;  
+}
+
+.connect-four .hover-yellow {
+    background: #fcf2a9;
 }

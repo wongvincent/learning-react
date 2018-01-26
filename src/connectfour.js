@@ -20,14 +20,22 @@ type BoardProps = {
   current: Grid;
   onClick: (columnNum: number) => void;
   winningLine: Array<Coords>;
+  redIsNext: boolean;
+};
+type BoardState = {
+  hover: number;
 };
 type ColumnProps = {
   columnNum: number;
   column: GridColumn;
-  winningLine: Array<Coords>
+  winningLine: Array<Coords>;
+  hover: number;
+  redIsNext: boolean;
 };
 type CircleProps = {
   circle: GridCircle;
+  hover: boolean;
+  redIsNext: boolean;
 };
 
 class Circle extends React.Component<CircleProps> {
@@ -44,8 +52,9 @@ class Circle extends React.Component<CircleProps> {
   }
 
   render() {
+    const hoverClass: string = this.props.hover ? (this.props.redIsNext ? 'hover-red' : 'hover-yellow' ): '';
     const circleClass: string = this.getColourOfCircle();
-    const classes: string = `circle ${circleClass}`;
+    const classes: string = `circle ${circleClass} ${hoverClass}`;
     return (
       <div className={classes}></div>
     );
@@ -71,11 +80,17 @@ class Column extends React.Component<ColumnProps> {
     for (let i=5; i>=0; i--) {
       const circle: GridCircle = column[i];
       const isWinnerClass: string = this.isWinningCircle(columnNum, i) ? 'winner' : '';
-      const squareClasses: string = `square ${isWinnerClass}`
+      const squareClasses: string = `square ${isWinnerClass}`;
+      let hover = false;
+      if (this.props.hover === columnNum && circle === 0 && (i === 0 || column[i - 1] !== 0)) {
+        hover = true;
+      }
       renderedCircles.push(
         <div className={squareClasses} key={i}>
           <Circle
-            circle={circle} />
+            circle={circle}
+            hover={hover}
+            redIsNext={this.props.redIsNext} />
         </div>
       );
     }
@@ -90,17 +105,42 @@ class Column extends React.Component<ColumnProps> {
   }
 }
 
-class Board extends React.Component<BoardProps> {
+class Board extends React.Component<BoardProps, BoardState> {
+  constructor(props: BoardProps) {
+    super(props);
+    this.state = {
+      hover: -1
+    };
+  }
+
+  handleMouseOver(columnNum: number) {
+    this.setState({
+      hover: columnNum
+    });
+  }
+
+  handleMouseOut() {
+    this.setState({
+      hover: -1
+    });
+  }
+
   renderBoard() {
     const renderedColumns: Array<React.Node> = [];
     for (let columnNum: number = 0; columnNum < 7; columnNum++) {
       const column: GridColumn = this.props.current[columnNum];
       renderedColumns.push(
-        <div className="column" key={columnNum} onClick={() => this.props.onClick(columnNum)}>
-          <Column
-            columnNum={columnNum}
-            column={column}
-            winningLine={this.props.winningLine} />
+        <div className="column"
+          key={columnNum}
+          onClick={() => this.props.onClick(columnNum)}
+          onMouseOver={() => this.handleMouseOver(columnNum)}
+          onMouseOut={() => this.handleMouseOut()} >
+            <Column
+              columnNum={columnNum}
+              column={column}
+              winningLine={this.props.winningLine}
+              hover={this.state.hover}
+              redIsNext={this.props.redIsNext} />
         </div>
       );
     }
@@ -271,7 +311,8 @@ export default class ConnectFour extends React.Component<Props, State> {
               <Board
                 current={current}
                 onClick={(columnNum) => this.playPiece(columnNum)}
-                winningLine={winningLine} />
+                winningLine={winningLine}
+                redIsNext={this.state.redIsNext} />
             </div>
             <div className="game-info">
               <div className="status">{status}</div>
