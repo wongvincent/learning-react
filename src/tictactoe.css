@@ -29,7 +29,7 @@
   }
   
   .tic-tac-toe .square.winner{
-    border: 3px solid #aa0000;
+    border: 3px solid #000;
     line-height: 29px;
   }
 
@@ -39,4 +39,12 @@
   
   .tic-tac-toe .kbd-navigation .square:focus {
     background: #ddd;
+  }
+
+  .tic-tac-toe .red-piece {
+    color: #e1001a;
+  }
+
+  .tic-tac-toe .yellow-piece {
+    color: #13c713;
   }

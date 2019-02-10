@@ -27,15 +27,29 @@ type BoardProps = {
   onClick: HandleClick;
 };
 
-function Square(props: SquareProps) {
-  const previousMoveClass = props.isPreviousMove ? 'previous-move' : '';
-  const winningSquareClass = props.isWinningSquare ? 'winner' : '';
-  const classes = `square ${previousMoveClass} ${winningSquareClass}` 
-  return (
-    <button className={classes} onClick={props.onClick}>
-      {props.value}
-    </button>
-  );
+class Square extends React.Component<SquareProps> {
+  getPieceColour(value: string): string {
+    switch (value) {
+      case 'O':
+        return 'red-piece';
+      case 'X':
+        return 'yellow-piece';
+      default:
+        return ''
+    }
+  }
+
+  render() {
+    const previousMoveClass = this.props.isPreviousMove ? 'previous-move' : '';
+    const winningSquareClass = this.props.isWinningSquare ? 'winner' : '';
+    const pieceColour = this.getPieceColour(this.props.value);
+    const classes = `square ${pieceColour} ${previousMoveClass} ${winningSquareClass}` 
+    return (
+      <button className={classes} onClick={this.props.onClick}>
+        {this.props.value}
+      </button>
+    );
+  }
 }
 
 class Board extends React.Component<BoardProps> {
