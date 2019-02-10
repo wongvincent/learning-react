@@ -1,5 +1,6 @@
 // @flow
 import * as React from 'react';
+import { CSSTransition } from 'react-transition-group';
 import './connectfour.css';
 
 type GridCircle = number;
@@ -37,9 +38,12 @@ type CircleProps = {
   hover: boolean;
   redIsNext: boolean;
 };
+type CirclePieceProps = {
+  circle: GridCircle;
+}
 
-class Circle extends React.Component<CircleProps> {
-  getColourOfCircle(): string {
+class CirclePiece extends React.Component<CirclePieceProps> {
+  getColourOfCircle(num: GridCircle): string {
     const circle = this.props.circle;
     switch (circle) {
       case 1:
@@ -47,16 +51,30 @@ class Circle extends React.Component<CircleProps> {
       case -1:
         return 'yellow-circle';
       default:
-        return 'blank-circle';
+        return '';
     }
   }
 
   render() {
     const hoverClass: string = this.props.hover ? (this.props.redIsNext ? 'hover-red' : 'hover-yellow' ): '';
-    const circleClass: string = this.getColourOfCircle();
-    const classes: string = `circle ${circleClass} ${hoverClass}`;
+    const circleClass: string = this.getColourOfCircle(this.props.circle);
+    const classes: string = `piece ${circleClass} ${hoverClass}`;
     return (
-      <div className={classes}></div>
+      <CSSTransition in={circleClass} classNames="slide-in-down">
+        <div className={classes}></div>
+      </CSSTransition>
+    );
+  }
+}
+
+class Circle extends React.Component<CircleProps> {
+  render() {
+    const classes: string = `circle`;
+    return (
+        <div className={classes}>
+          <CirclePiece {...this.props} />
+        </div>
+      
     );
   }
 }
